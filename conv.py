@@ -92,7 +92,7 @@ def main():
     scheduler = StepLR(optimizer, step_size=1, gamma=0.7)
     
     accuracies = {'Epoch': [], 'Accuracy': []}
-    for epoch in range(1, 15):  # 15 Epochs for "efficiency"
+    for epoch in range(1, 20):  
         train(model, device, train_loader, optimizer, epoch)
         accuracy = test(model, device, test_loader)
         scheduler.step()
