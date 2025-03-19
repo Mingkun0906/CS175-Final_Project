@@ -8,7 +8,6 @@ from torch.utils.data import DataLoader
 import pandas as pd
 
 
-
 # A CNN for facial expression recognition
 class EmotionCNN(nn.Module):
     def __init__(self, num_classes=7):
@@ -70,6 +69,7 @@ def train(model, device, train_loader, optimizer, epoch):
 
     avg_loss = total_loss / num_batches
     print(f"Train Epoch: {epoch} - Average Loss: {avg_loss:.6f}")
+    return avg_loss
     
 # Testing function
 def test(model, device, test_loader):
@@ -88,7 +88,7 @@ def test(model, device, test_loader):
     accuracy = 100. * correct / len(test_loader.dataset)
     print(f'\nTest set: Average loss: {test_loss:.4f}, Accuracy: {correct}/{len(test_loader.dataset)} '
           f'({accuracy:.0f}%)\n')
-    return accuracy
+    return test_loss, accuracy
 
 def main():
     # Check if CUDA is available and use it if possible
@@ -103,17 +103,21 @@ def main():
     optimizer = optim.Adam(model.parameters(), lr=0.0001)
     scheduler = StepLR(optimizer, step_size=1, gamma=0.7)
     
-    accuracies = {'Epoch': [], 'Accuracy': []}
-    for epoch in range(1, 21):
-        train(model, device, train_loader, optimizer, epoch)
-        accuracy = test(model, device, test_loader)
+    # Track both loss and accuracy
+    results = {'Epoch': [], 'Train Loss': [], 'Test Loss': [], 'Accuracy': []}
+    for epoch in range(1, 11):
+        train_loss = train(model, device, train_loader, optimizer, epoch)
+        test_loss, accuracy = test(model, device, test_loader)
         scheduler.step()
         
-        accuracies['Epoch'].append(epoch)
-        accuracies['Accuracy'].append(accuracy)
+        # Log results
+        results['Epoch'].append(epoch)
+        results['Train Loss'].append(train_loss)
+        results['Test Loss'].append(test_loss)
+        results['Accuracy'].append(accuracy)
     
-    # Save accuracies to Excel file
-    df = pd.DataFrame(accuracies).round({'Accuracy': 4})
+    # Save results to Excel file
+    df = pd.DataFrame(results).round({'Accuracy': 4, 'Train Loss': 4, 'Test Loss': 4})
     df.to_excel('conv_accuracies.xlsx', index=False)
     
     # Save the trained model
