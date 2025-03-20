@@ -54,19 +54,19 @@ emotion_origins/
 ## Run Code
 #### Train and Test CNN
 ```
-python3 cnn_train.py
+python3 conv.py
 ```
 This will save the trained model as conv_cnn_model.pth and accuracy results in conv_accuracies.xlsx.
 
 #### Train and Test MLP
 ```
-python3 mlp_train.py
+python3 mlp.py
 ```
 This will save the trained model as mlp_model.pth and accuracy results in mlp_accuracies.xlsx.
 
 #### Train and Test ResNet50
 ```
-python3 resnet_train.py
+python3 resnet50.py
 ```
 This will save the trained model as resnet50_model.pth and accuracy results in resnet50_accuracies.xlsx.
 
